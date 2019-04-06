@@ -1,14 +1,16 @@
 package com.example.myapplication;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.util.Log;
+import android.widget.TextView;
+import android.widget.CheckBox;
+
+
 
 public class DisplayMessageActivity extends AppCompatActivity {
     DrawView drawView;
@@ -17,11 +19,14 @@ public class DisplayMessageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         setContentView(R.layout.activity_display_message);
+
+
 
         LinearLayout linearLayout00 =  findViewById(R.id.layort00);
         this.initDrawView();
+
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
 
@@ -38,6 +43,11 @@ public class DisplayMessageActivity extends AppCompatActivity {
         };
         drawView.setLayoutParams(lp);
         drawView.setOnClickListener(oclBtnOk);
+        drawView.invertDrawMode();
+        this.setMinTemperature();
+        this.setMaxTemperature();
+        this.setAccuracy();
+        this.setAlarmIgnore();
         linearLayout00.addView(drawView);
 
         this.myThread = new Thread( // создаём новый поток
@@ -64,17 +74,19 @@ public class DisplayMessageActivity extends AppCompatActivity {
     }
 
     protected void initDrawView(){
-        SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        int offset = myPreferences.getInt("offset", 0);
         drawView = new DrawView(this);
-        drawView.lowTemperature = (double) myPreferences.getFloat("lowTemperature", 0);
-        drawView.hightTemperature = (double) myPreferences.getFloat("hightTemperature", 0);
+        Intent intent = getIntent();
+        drawView.setOffset(intent.getIntExtra("offset", 0));
+        drawView.lowTemperature = intent.getFloatExtra("lowTemperature", 0);
+        drawView.hightTemperature = intent.getFloatExtra("hightTemperature", 0);
+        drawView.capture = intent.getStringExtra("capture");
+        drawView.tempAccuracy = intent.getStringExtra("tempAccuracy");
+        drawView.alarmIgnore = intent.getBooleanExtra("alarmIgnore", false);
 
-        drawView.setOffset(offset);
-        drawView.capture = myPreferences.getString("capture", "");
         Log.i("READ lowTemperature",Double.toString(drawView.lowTemperature));
         Log.i("READ hightTemperature",Double.toString(drawView.hightTemperature));
         Log.i("READ offset",Double.toString(drawView.offset));
+        Log.i("READ tempAccuracy",drawView.tempAccuracy);
     }
 
     // Метод обработки нажатия на кнопку
@@ -94,4 +106,101 @@ public class DisplayMessageActivity extends AppCompatActivity {
             drawView.invalidate();
         }
     };
+
+    private void setMinTemperature(){
+        String _mintemptext = "Мін. темп.: " + String.format("%.1f", drawView.lowTemperature);
+        TextView _editText = findViewById(R.id.textViewmin);
+        _editText.setText(_mintemptext);
+    }
+
+    public void sendMessage_button_minUp(View view) {
+        if (this.drawView.lowTemperature >= (this.drawView.hightTemperature - 1)) return;
+        this.drawView.lowTemperature += 0.1;
+        this.setMinTemperature();
+    }
+
+    public void sendMessage_button_minDown(View view) {
+        if (drawView.lowTemperature <= 13.0) return;
+        this.drawView.lowTemperature -= 0.1;
+        this.setMinTemperature();
+    }
+
+    private void setMaxTemperature(){
+        String _maxtemptext = "Макс. темп.: " + String.format("%.1f", drawView.hightTemperature);
+        TextView _editText = findViewById(R.id.textViewmax);
+        _editText.setText(_maxtemptext);
+    }
+
+    public void sendMessage_button_maxUp(View view) {
+        if (this.drawView.hightTemperature >= 32) return;
+        this.drawView.hightTemperature += 0.1;
+        this.setMaxTemperature();
+    }
+
+    public void sendMessage_button_maxDown(View view) {
+        if (drawView.hightTemperature <= (this.drawView.lowTemperature + 1)) return;
+        this.drawView.hightTemperature -= 0.1;
+        this.setMaxTemperature();
+    }
+
+    private void setAccuracy(){
+        boolean _Accuracy = (drawView.tempAccuracy.equals("%.1f"));
+        Log.i("Accuracy", Boolean.toString(_Accuracy));
+        Log.i("tempAccuracy", drawView.tempAccuracy);
+        CheckBox _editText = findViewById(R.id.checkBox_1);
+        _editText.setChecked(_Accuracy);
+    }
+
+    public void sendMessage_button_Accuracy(View view) {
+        if (drawView.tempAccuracy.equals("%.1f"))
+            drawView.tempAccuracy = "%.0f";
+        else
+            drawView.tempAccuracy = "%.1f";
+    }
+
+    private void setAlarmIgnore(){
+        CheckBox _editText = findViewById(R.id.checkBox_2);
+        _editText.setChecked(drawView.alarmIgnore);
+    }
+
+    public void sendMessage_button_AlarmIgnore(View view) {
+        drawView.alarmIgnore = !drawView.alarmIgnore;
+    }
+
+    public void sendMessage_button_Save(View view) {
+        Intent intent = getIntent();
+
+        intent.putExtra("offset", this.drawView.offset);
+        intent.putExtra("lowTemperature", (float)this.drawView.lowTemperature);
+        intent.putExtra("hightTemperature", (float)this.drawView.hightTemperature);
+        intent.putExtra("capture", this.drawView.capture);
+        intent.putExtra("tempAccuracy", this.drawView.tempAccuracy);
+        intent.putExtra("alarmIgnore", this.drawView.alarmIgnore);
+
+        setResult(1, intent);
+        finish();
+    }
+
+    public void sendMessage_button_SaveAll(View view) {
+        Intent intent = getIntent();
+
+        intent.putExtra("offset", this.drawView.offset);
+        intent.putExtra("lowTemperature", (float)this.drawView.lowTemperature);
+        intent.putExtra("hightTemperature", (float)this.drawView.hightTemperature);
+        intent.putExtra("capture", this.drawView.capture);
+        intent.putExtra("tempAccuracy", this.drawView.tempAccuracy);
+        intent.putExtra("alarmIgnore", this.drawView.alarmIgnore);
+
+        setResult(2, intent);
+        finish();
+    }
+
+    public void sendMessage_button_Cancel(View view) {
+        Intent intent = getIntent();
+
+        setResult(0, intent);
+        finish();
+    }
+
+
 }

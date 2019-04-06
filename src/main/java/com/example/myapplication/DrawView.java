@@ -22,6 +22,8 @@ public class DrawView extends View {
     double[] gry;
     public double lowTemperature;
     public double hightTemperature;
+    public boolean alarmIgnore;
+    public boolean dontWriteGreen;
     String capture;
 
     // прорисовка
@@ -38,6 +40,8 @@ public class DrawView extends View {
         this.hightTemperature = 24.0;
         this.border = 20;
         this.tempAccuracy = "%.0f";
+        this.alarmIgnore = false;
+        this.dontWriteGreen = false;
         this.capture = "test";
 
         this.generateTestData();
@@ -142,7 +146,7 @@ public class DrawView extends View {
         double[] dgry = new double[this.grx.length];
 
         double scalex = (double)(width - this.border * 2) / (maxx - minx);
-        double scaley = (double)(height - this.border * 2) / (maxy - miny);
+        double scaley = (double)(height - this.border * 2) / (maxy - miny) * 0.9;
 
         double ylowTemperature = (double)(this.lowTemperature - miny) * scaley + this.border;
         double yhightTemperature = (double)(this.hightTemperature - miny) * scaley + this.border;
@@ -215,6 +219,9 @@ public class DrawView extends View {
 
     private void draw0(Canvas canvas) {
         this.draw_border (canvas);
+        this.draw_capture(canvas);
+        if (this.alarmIgnore) return;
+
         int width = canvas.getWidth();
         int height = canvas.getHeight();
         int textsize = Math.min((height - this.border),(width - this.border)) / 2;
@@ -226,8 +233,11 @@ public class DrawView extends View {
             paint.setColor(Color.BLUE);
         else if (_temp > this.hightTemperature)
             paint.setColor(Color.RED);
-        else
+        else {
             paint.setColor(Color.rgb(20,180,20)); //0x55005500
+            if (this.dontWriteGreen) return;
+        }
+
 
 
 
@@ -237,7 +247,7 @@ public class DrawView extends View {
         float x = width / 2f - r.width() / 2f - r.left;
         float y = height / 2f + r.height() / 2f - r.bottom;
         canvas.drawText(_tempstr, x, y, paint);
-        this.draw_capture(canvas);
+
     }
 
     @Override
