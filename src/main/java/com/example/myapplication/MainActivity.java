@@ -1,3 +1,6 @@
+//git commit -m "first commit"
+//git push -u origin master
+
 package com.example.myapplication;
 
 import android.support.v7.app.AppCompatActivity;
@@ -9,8 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.util.Log;
 import android.widget.ToggleButton;
-
-
+import android.os.Handler;
 
 public class MainActivity extends AppCompatActivity {
     public final static String EXTRA_MESSAGE = "EXTRA_MESSAGE";
@@ -19,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
     DrawView drawViewActivity;
 
     Thread myThread;
+
+    long lastDblClickTime;
+    View postDelayview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,24 +129,31 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public void sendMessage_butDraw_SingleClick(View view) {
-        DrawView tmpDW = (DrawView)view;
-        tmpDW.invertDrawMode();
-        tmpDW.invalidate();
+
         Log.i("Click","SingleClick");
+        this.postDelayview = view;
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (System.currentTimeMillis() - lastDblClickTime < 300) return;
+                DrawView tmpDW = (DrawView)postDelayview;
+                tmpDW.invertDrawMode();
+                tmpDW.invalidate();
+            }
+        }, 300);
     }
 
     public void sendMessage_butDraw_DoubleClick(View view) {
         this.sendMessage_butDraw_SingleClick(view); //Вызываю потому что было первое нажатиє а на самом деле DblClick
         Intent intent = new Intent(this, DisplayMessageActivity.class);
         DrawView _drawView = (DrawView)view;
-        intent.putExtra("offset", _drawView.offset);
-        intent.putExtra("lowTemperature", (float)_drawView.lowTemperature);
-        intent.putExtra("hightTemperature", (float)_drawView.hightTemperature);
-        intent.putExtra("capture", _drawView.capture);
-        intent.putExtra("tempAccuracy", _drawView.tempAccuracy);
-        intent.putExtra("alarmIgnore", _drawView.alarmIgnore);
+        _drawView.saveToIntent(intent);
         this.drawViewActivity = _drawView;
         startActivityForResult(intent, 1);
+
+        this.lastDblClickTime = System.currentTimeMillis();
     }
 
     @Override
@@ -149,24 +161,14 @@ public class MainActivity extends AppCompatActivity {
         switch(requestCode) {
             case 1:
                 if (this.drawViewActivity == null) break;
-                if (resultCode == 1) {
-                    this.drawViewActivity.setOffset(data.getIntExtra("offset", 0));
-                    this.drawViewActivity.lowTemperature = data.getFloatExtra("lowTemperature", 0);
-                    this.drawViewActivity.hightTemperature = data.getFloatExtra("hightTemperature", 0);
-                    this.drawViewActivity.capture = data.getStringExtra("capture");
-                    this.drawViewActivity.tempAccuracy = data.getStringExtra("tempAccuracy");
-                    this.drawViewActivity.alarmIgnore = data.getBooleanExtra("alarmIgnore", false);
-                }
-                else if (resultCode == 2) {
+                if (resultCode == 1) this.drawViewActivity.loadFromIntent(data,false,true);
+
+                if (resultCode == 2) {
                     for (int i = 0; i < drawView.length; i++){
                         if (drawView[i] == null) break;
                         DrawView tmpDrawView = (DrawView)drawView[i];
-                        tmpDrawView.lowTemperature = data.getFloatExtra("lowTemperature", 0);
-                        tmpDrawView.hightTemperature = data.getFloatExtra("hightTemperature", 0);
-                        tmpDrawView.tempAccuracy = data.getStringExtra("tempAccuracy");
-                        tmpDrawView.alarmIgnore = data.getBooleanExtra("alarmIgnore", false);
+                        tmpDrawView.loadFromIntent(data, false, false);
                     }
-
                 }
                 this.drawViewActivity = null;
                 break;

@@ -1,12 +1,7 @@
-//ToDo  1. точность отображения
-//      2. размещение по карте дома или по рядам (быстро кнопки внизу)
-//      3. показывать только проблемные зоны
-//      4. 2-й ап - увеличить на весь экран
-//      5. тестовый режим
-
 package com.example.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -46,6 +41,25 @@ public class DrawView extends View {
 
         this.generateTestData();
     }
+
+    public void saveToIntent(Intent data) {
+        data.putExtra("offset", this.offset);
+        data.putExtra("lowTemperature", (float)this.lowTemperature);
+        data.putExtra("hightTemperature", (float)this.hightTemperature);
+        data.putExtra("capture", this.capture);
+        data.putExtra("tempAccuracy", this.tempAccuracy);
+        data.putExtra("alarmIgnore", this.alarmIgnore);
+    }
+
+    public void loadFromIntent(Intent data, boolean loadCapture, boolean loadOffset) {
+        this.lowTemperature = data.getFloatExtra("lowTemperature", 0);
+        this.hightTemperature = data.getFloatExtra("hightTemperature", 0);
+        this.tempAccuracy = data.getStringExtra("tempAccuracy");
+        this.alarmIgnore = data.getBooleanExtra("alarmIgnore", false);
+        if (loadCapture) this.capture = data.getStringExtra("capture");
+        if (loadOffset) this.setOffset(data.getIntExtra("offset", 0));
+    }
+
 
     private void generateTestData() {
         int td_len = 63;
@@ -154,7 +168,7 @@ public class DrawView extends View {
         canvas.drawLine(this.border, height - Math.round(ylowTemperature), width - this.border, height - Math.round(ylowTemperature), paint);
 
         paint.setTextAlign(Paint.Align.LEFT);
-        paint.setTextSize(20);
+        paint.setTextSize(30);
         canvas.drawText(String.format("%.1f", this.lowTemperature), this.border , height - Math.round(ylowTemperature) + 25 , paint);
 
         paint.setColor(Color.RED);
