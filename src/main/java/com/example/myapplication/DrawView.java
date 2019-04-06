@@ -16,12 +16,13 @@ import android.graphics.Rect;
 
 public class DrawView extends View {
     Paint paint = new Paint();
-    int x;
+    public int offset;
 
     double[] grx;
     double[] gry;
-    double lowTemperature;
-    double hightTemperature;
+    public double lowTemperature;
+    public double hightTemperature;
+    String capture;
 
     // прорисовка
     int border;
@@ -31,12 +32,13 @@ public class DrawView extends View {
     private void init() {
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(5);
-        this.x = 0;
+        this.offset = 0;
         this.drawMode = 0;
         this.lowTemperature = 18.0;
         this.hightTemperature = 24.0;
         this.border = 20;
         this.tempAccuracy = "%.0f";
+        this.capture = "test";
 
         this.generateTestData();
     }
@@ -61,13 +63,18 @@ public class DrawView extends View {
         for (int i = 0; i < td_len; i++) {
             this.gry[i] = (this.gry[i] - td_min_temp_is) / rescale + td_min_temp;
         }
+    }
 
-        int offset_random = (int)Math.round(Math.random()* td_len);
+    public void generateRandomOffset() {
+        int offset_random = (int)Math.round(Math.random()* this.grx.length);
         for (int j = 0; j < offset_random; j++) {
-            double tmp = this.gry[0];
-            for (int i = 0; i < this.gry.length - 1; i++ )
-                this.gry[i] = this.gry[i+1];
-            this.gry[this.gry.length - 1] = tmp;
+            this.addOffset();
+        }
+    }
+
+    public void setOffset(int _offset) {
+        while (this.offset % this.grx.length != _offset % this.grx.length) {
+            this.addOffset();
         }
     }
 
@@ -86,16 +93,12 @@ public class DrawView extends View {
         init();
     }
 
-    public void setOffset() {
-        this.x++;
+    public void addOffset() {
+        this.offset++;
         double tmp = this.gry[0];
         for (int i = 0; i < this.gry.length - 1; i++ )
             this.gry[i] = this.gry[i+1];
         this.gry[this.gry.length - 1] = tmp;
-    }
-
-    public int getOffset() {
-        return this.x;
     }
 
     public void invertDrawMode(){
@@ -146,8 +149,14 @@ public class DrawView extends View {
         paint.setColor(Color.BLUE);
         canvas.drawLine(this.border, height - Math.round(ylowTemperature), width - this.border, height - Math.round(ylowTemperature), paint);
 
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(20);
+        canvas.drawText(String.format("%.1f", this.lowTemperature), this.border , height - Math.round(ylowTemperature) + 25 , paint);
+
         paint.setColor(Color.RED);
         canvas.drawLine(this.border, height - Math.round(yhightTemperature), width - this.border, height - Math.round(yhightTemperature), paint);
+
+        canvas.drawText(String.format("%.1f", this.hightTemperature), this.border , height - Math.round(yhightTemperature) - 5 , paint);
 
 
         for (int i = 0; i < this.grx.length; i++ ){
@@ -185,6 +194,23 @@ public class DrawView extends View {
         float y = height  - r.height()  - r.bottom;
         canvas.drawText(_tempstr, x, y, paint);
 
+        this.draw_capture(canvas);
+
+    }
+
+    private void draw_capture(Canvas canvas) {
+        if (this.capture == "") return;
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(30);
+        int width = canvas.getWidth();
+        int height = canvas.getHeight();
+        paint.setTextAlign(Paint.Align.LEFT);
+        Rect r = new Rect();
+        paint.getTextBounds(this.capture, 0, this.capture.length(), r);
+        float x = width  - r.width()  - r.left - this.border;
+        float y = this.border + r.height();
+        canvas.drawText(this.capture, x, y, paint);
+
     }
 
     private void draw0(Canvas canvas) {
@@ -211,6 +237,7 @@ public class DrawView extends View {
         float x = width / 2f - r.width() / 2f - r.left;
         float y = height / 2f + r.height() / 2f - r.bottom;
         canvas.drawText(_tempstr, x, y, paint);
+        this.draw_capture(canvas);
     }
 
     @Override
