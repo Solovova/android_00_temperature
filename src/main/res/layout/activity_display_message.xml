@@ -22,8 +22,10 @@
 
         <ImageButton
             android:id="@+id/button_minDown"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
+            android:theme="@style/FlatButton"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:onClick="sendMessage_button_minDown"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -33,6 +35,7 @@
             android:id="@+id/textViewmin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:text="19.0"
             android:textColor="@color/design_default_color_primary"
             android:textSize="28sp"
@@ -42,22 +45,26 @@
 
         <ImageButton
             android:id="@+id/button_miUp"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
+            android:theme="@style/FlatButton"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:onClick="sendMessage_button_minUp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_action_name_up" />
 
+
         <Space
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_width="30dp"
+            android:layout_height="wrap_content" />
 
         <ImageButton
             android:id="@+id/button_maxDown"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
+            android:theme="@style/FlatButton"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:onClick="sendMessage_button_maxDown"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -76,8 +83,10 @@
 
         <ImageButton
             android:id="@+id/button_maxUp"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
+            android:theme="@style/FlatButton"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:onClick="sendMessage_button_maxUp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -93,8 +102,10 @@
 
         <ImageButton
             android:id="@+id/button_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:theme="@style/FlatButton"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:onClick="sendMessage_button_Cancel"
             app:srcCompat="@drawable/ic_action_name_close"
@@ -102,8 +113,10 @@
 
         <ImageButton
             android:id="@+id/button_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:theme="@style/FlatButton"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_weight="1"
             android:onClick="sendMessage_button_Save"
             app:srcCompat="@drawable/ic_action_name_done"
@@ -111,8 +124,10 @@
 
         <ImageButton
             android:id="@+id/button_saveall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:theme="@style/FlatButton"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_weight="1"
             android:onClick="sendMessage_button_SaveAll"
             app:srcCompat="@drawable/ic_action_name_doneall"
@@ -120,16 +135,18 @@
 
 
         <Space
-            android:layout_width="wrap_content"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            />
 
         <ToggleButton
             android:id="@+id/checkBox_1"
-            android:layout_width="55dp"
+            android:layout_width="65dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="sendMessage_button_Accuracy"
+            android:theme="@style/FlatButton"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:text="точність"
             android:textOff="ХХ"
             android:textOn="ХХ.Х"
@@ -138,10 +155,12 @@
 
         <ToggleButton
             android:id="@+id/checkBox_2"
-            android:layout_width="55dp"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="sendMessage_button_AlarmIgnore"
+            android:theme="@style/FlatButton"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:text="ігнорувати"
             android:textOff="АКТИВ"
             android:textOn="ІГНОР"
@@ -149,9 +168,6 @@
             app:layout_constraintTop_toTopOf="parent" />
     </LinearLayout>
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
 
 </LinearLayout>

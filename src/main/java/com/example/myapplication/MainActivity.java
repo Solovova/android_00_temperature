@@ -1,8 +1,13 @@
 //git commit -m "first commit"
 //git push -u origin master
 
+//ToDo XX, ACIV одноъ висоти
+//ToDo при поверненні з визначення пауза при DblClick
+//ToDo при воверненні питатися що всім призначувати
+
 package com.example.myapplication;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent; // подключаем класс Intent
@@ -15,8 +20,6 @@ import android.widget.ToggleButton;
 import android.os.Handler;
 
 public class MainActivity extends AppCompatActivity {
-    public final static String EXTRA_MESSAGE = "EXTRA_MESSAGE";
-
     Object[]  drawView;
     DrawView drawViewActivity;
 
@@ -50,11 +53,14 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        this.drawView = new Object[5];
+        this.drawView = new Object[4];
         DrawView tmp_drawView;
+
+        int backgroundColor = Color.WHITE;
 
         tmp_drawView = new DrawView(this);
         tmp_drawView.generateRandomOffset();
+        tmp_drawView.setBackgroundColor(backgroundColor);
         tmp_drawView.setOnClickListener(oclBtnOk);
         tmp_drawView.setLayoutParams(lp);
         tmp_drawView.capture = "кухня";
@@ -63,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
         tmp_drawView = new DrawView(this);
         tmp_drawView.generateRandomOffset();
+        tmp_drawView.setBackgroundColor(backgroundColor);
         tmp_drawView.setOnClickListener(oclBtnOk);
         tmp_drawView.setLayoutParams(lp);
         tmp_drawView.capture = "каб.301.";
@@ -71,27 +78,21 @@ public class MainActivity extends AppCompatActivity {
 
         tmp_drawView = new DrawView(this);
         tmp_drawView.generateRandomOffset();
-        tmp_drawView.setOnClickListener(oclBtnOk);
-        tmp_drawView.setLayoutParams(lp);
-        tmp_drawView.capture = "каб.302.";
-        linearLayout02.addView(tmp_drawView);
-        this.drawView[2] = tmp_drawView;
-
-        tmp_drawView = new DrawView(this);
-        tmp_drawView.generateRandomOffset();
+        tmp_drawView.setBackgroundColor(backgroundColor);
         tmp_drawView.setOnClickListener(oclBtnOk);
         tmp_drawView.setLayoutParams(lp);
         tmp_drawView.capture = "конферец зал";
         linearLayout03.addView(tmp_drawView);
-        this.drawView[3] = tmp_drawView;
+        this.drawView[2] = tmp_drawView;
 
         tmp_drawView = new DrawView(this);
         tmp_drawView.generateRandomOffset();
+        tmp_drawView.setBackgroundColor(backgroundColor);
         tmp_drawView.setOnClickListener(oclBtnOk);
         tmp_drawView.setLayoutParams(lp);
         tmp_drawView.capture = "коридор";
         linearLayout03.addView(tmp_drawView);
-        this.drawView[4] = tmp_drawView;
+        this.drawView[3] = tmp_drawView;
         //------------------------------
 
         this.myThread = new Thread( // создаём новый поток

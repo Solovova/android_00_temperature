@@ -17,4 +17,9 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="FlatButton" parent="Theme.AppCompat.Light">
+        <item name="android:textColor">@color/myPeach</item>
+        <item name="colorControlHighlight">@color/myRed</item>
+    </style>
+
 </resources>

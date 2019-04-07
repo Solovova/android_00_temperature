@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,12 +9,19 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.CheckBox;
 import android.widget.ToggleButton;
+import android.app.AlertDialog;
+import android.view.LayoutInflater;
+//import android.view.View.OnClickListener;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnClickListener;
+
 
 public class DisplayMessageActivity extends AppCompatActivity {
     DrawView drawView;
     Thread myThread;
+    long lastDblClickTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +80,15 @@ public class DisplayMessageActivity extends AppCompatActivity {
     }
 
     public void sendMessage_butDraw_SingleClick(View view) {
-        DrawView tmpDW = (DrawView)view;
-        tmpDW.invertDrawMode();
-        tmpDW.invalidate();
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (System.currentTimeMillis() - lastDblClickTime < 300) return;
+                drawView.invertDrawMode();
+                drawView.invalidate();
+            }
+        }, 300);
     }
 
     public void sendMessage_butDraw_DoubleClick(View view) {
@@ -97,12 +111,14 @@ public class DisplayMessageActivity extends AppCompatActivity {
         if (this.drawView.lowTemperature >= (this.drawView.hightTemperature - 1)) return;
         this.drawView.lowTemperature += 0.1;
         this.setMinTemperature();
+        drawView.invalidate();
     }
 
     public void sendMessage_button_minDown(View view) {
         if (drawView.lowTemperature <= 13.0) return;
         this.drawView.lowTemperature -= 0.1;
         this.setMinTemperature();
+        drawView.invalidate();
     }
 
     private void setMaxTemperature(){
@@ -114,12 +130,14 @@ public class DisplayMessageActivity extends AppCompatActivity {
         if (this.drawView.hightTemperature >= 32) return;
         this.drawView.hightTemperature += 0.1;
         this.setMaxTemperature();
+        drawView.invalidate();
     }
 
     public void sendMessage_button_maxDown(View view) {
         if (drawView.hightTemperature <= (this.drawView.lowTemperature + 1)) return;
         this.drawView.hightTemperature -= 0.1;
         this.setMaxTemperature();
+        drawView.invalidate();
     }
 
     private void setAccuracy(){
@@ -135,6 +153,7 @@ public class DisplayMessageActivity extends AppCompatActivity {
             drawView.tempAccuracy = "%.0f";
         else
             drawView.tempAccuracy = "%.1f";
+        drawView.invalidate();
     }
 
     private void setAlarmIgnore(){
@@ -151,6 +170,21 @@ public class DisplayMessageActivity extends AppCompatActivity {
     }
 
     public void sendMessage_button_SaveAll(View view) {
+
+
+
+
+//        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+//        LayoutInflater inflater = this.getLayoutInflater();
+//        View dialogView = inflater.inflate(R.layout.dialog_choose_saveall, null);
+//        dialogBuilder.setView(dialogView);
+
+//        EditText editText = (EditText) dialogView.findViewById(R.id.label_field);
+//        editText.setText("test label");
+//        AlertDialog alertDialog = dialogBuilder.create();
+//        alertDialog.show();
+        Log.i("Dialog","OUT");
+
         this.exitFromIntent(2);
     }
 

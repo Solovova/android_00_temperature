@@ -28,7 +28,6 @@ public class DrawView extends View {
 
     private void init() {
         paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(5);
         this.offset = 0;
         this.drawMode = 0;
         this.lowTemperature = 18.0;
@@ -127,7 +126,8 @@ public class DrawView extends View {
     }
 
     private void draw_border (Canvas canvas) {
-        paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(2);
+        paint.setColor(Color.LTGRAY);
         int width = canvas.getWidth();
         int height = canvas.getHeight();
         int border = 10;
@@ -135,11 +135,13 @@ public class DrawView extends View {
         canvas.drawLine(width - border, border, width - border, height - border, paint);
         canvas.drawLine(width - border, height - border, border, height - border, paint);
         canvas.drawLine(border, height - border, border,border, paint);
+        paint.setStrokeWidth(5);
     }
 
     private void draw1(Canvas canvas) {
         this.draw_border (canvas);
         paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(3);
 
         int width = canvas.getWidth();
         int height = canvas.getHeight();
@@ -191,6 +193,14 @@ public class DrawView extends View {
             else
                 paint.setColor(Color.rgb(20,180,20));
             canvas.drawLine(Math.round(dgrx[i]), height - Math.round(dgry[i]), Math.round(dgrx[i+1]), height - Math.round(dgry[i+1]), paint);
+
+            int tx = (int)Math.round(dgrx[i+1]);
+            int ty = height - (int)Math.round(dgry[i+1]);
+            int tb = 2;
+            canvas.drawLine(tx-tb,ty -tb, tx+tb,ty-tb,paint);
+            canvas.drawLine(tx+tb,ty-tb, tx +tb, ty+tb,paint);
+            canvas.drawLine( tx +tb, ty+tb,tx-tb,ty+tb,paint);
+            canvas.drawLine( tx -tb, ty+tb,tx-tb,ty-tb,paint);
         }
 
         float textsize = (float)50.0;
@@ -219,6 +229,7 @@ public class DrawView extends View {
     private void draw_capture(Canvas canvas) {
         if (this.capture == "") return;
         paint.setColor(Color.BLACK);
+        paint.setFakeBoldText(true);
         paint.setTextSize(30);
         int width = canvas.getWidth();
         int height = canvas.getHeight();
@@ -234,6 +245,7 @@ public class DrawView extends View {
     private void draw0(Canvas canvas) {
         this.draw_border (canvas);
         this.draw_capture(canvas);
+
         if (this.alarmIgnore) return;
 
         int width = canvas.getWidth();
